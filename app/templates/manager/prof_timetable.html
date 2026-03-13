@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %} Creneaux {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <div>
+        <h2 class="title">Creneaux</h2>
+        {% if prof %}
+        <div class="text-muted">{{ prof.name }} {{ prof.surname }}</div>
+        {% else %}
+        <div class="text-muted">Aucun professeur</div>
+        {% endif %}
+    </div>
+    <form method="post" class="d-flex gap-2 align-items-center">
+        <select name="prof_id" class="form-control" required>
+            <option value="">Choisir un professeur</option>
+            {% for p in profs %}
+            <option value="{{ p.id }}" {% if selected_prof_id == p.id %}selected{% endif %}>
+                {{ p.name }} {{ p.surname }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary shadow">Afficher</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block main %}
+{% include "flash.html" %}
+
+{% if prof %}
+<div class="mx-3 mt-4 bg-white p-3 rounded-4 shadow">
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center availability-table">
+            <thead class="table-light">
+                <tr>
+                    <th>Heure</th>
+                    {% for day in days %}
+                    <th>{{ day.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in time_rows %}
+                <tr>
+                    <th class="text-nowrap">{{ row.label }}</th>
+                    {% for day in days %}
+                    {% set ts = row.by_day.get(day.value) %}
+                    <td class="availability-cell">
+                        {% if ts %}
+                        {% set items = seances_by_slot.get(ts.id) %}
+                        {% if items %}
+                        <div class="d-flex flex-column gap-1 text-start">
+                            {% for seance in items %}
+                            <div class="bg-light text-dark border py-2 text-center">
+                                <div class="fw-semibold">{{ seance.course_name }}</div>
+                                <div class="small text-muted">
+                                    {{ seance.class_level }}-{{ seance.class_field }}
+                                    {% if seance.class_tag %} {{ seance.class_tag }}{% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="mx-3 mt-4 text-muted">Aucun professeur a afficher.</div>
+{% endif %}
+{% endblock %}

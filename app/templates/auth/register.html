@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="login-page">
+    <main class="login-bg">
+        <div class="login-frame">
+            <div class="login-card register-card border-0">
+                <div class="p-2 p-md-4">
+                    <h1 class="h5 fw-bold mb-1">Creer un compte</h1>
+                    <p class="text-muted small mb-3">Inscrivez-vous pour commencer.</p>
+                    {% include "flash.html" %}
+                    <form action="" method="post">
+                        <div class="mb-2">
+                            <label class="form-label small text-muted" for="name">Nom</label>
+                            <input class="form-control" type="text" id="name" name="name" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted" for="surname">Prenom</label>
+                            <input class="form-control" type="text" id="surname" name="surname" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted" for="email">Email address</label>
+                            <input class="form-control" type="email" id="email" name="email" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted" for="password">Password</label>
+                            <input class="form-control" type="password" id="password" name="password" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted" for="confirm-password">Confirm password</label>
+                            <input class="form-control" type="password" id="confirm-password" name="confirm_password"
+                                required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted" for="classe">Classe</label>
+                            <select class="form-select" id="classe" name="class_id" required>
+                                <option value="" selected disabled>Classe</option>
+                                {% for classe in classes %}
+                                <option for="" value="{{ classe.id }}">{{ classe.level}}-{{ classe.field }}{% if
+                                    classe.tag %} {{ classe.tag }}{%
+                                    endif %} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3 small">
+                            <a class="login-link" href="{{ url_for('auth.login') }}">login with an existing account</a>
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Creer un compte</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

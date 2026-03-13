@@ -1,0 +1,359 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --vert: #A8BD7A;
+    --bg_2: #F1F1F1;
+    --bg_1: #F8F8F8;
+    --red: #E46471;
+    --jaune: #FED37F;
+    --gray-100: #F3F4F6;
+    --gray-300: #a3a3a3;
+    --gray-600: #4B5563;
+    --gray-900: #242424;
+    --xs: 0.75rem;
+    --sm: 1rem;
+    --md: 1.5rem;
+    --lg: 2rem;
+    --xl: 3rem;
+}
+
+body * {
+    font-family: "Roboto", sans-serif;
+}
+
+body {
+    background: var(--bg_2);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.sidebar {
+    height: 100vh;
+    position: sticky;
+    top: 0px;
+    transition: all 0.3s ease;
+
+}
+
+.sidebar .main {
+    background-color: var(--bg_2);
+}
+
+.sidebar li span {
+    font-size: 16px;
+    text-decoration: none;
+    color: var(--gray-600);
+}
+
+.btn-primary {
+    background-color: var(--vert);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--vert);
+    border: none;
+    opacity: 0.8;
+}
+
+.btn-primary:active {
+    background-color: var(--vert);
+    border: none;
+    opacity: 0.6;
+}
+
+.btn-secondary {
+    background-color: var(--red);
+    border: none;
+}
+
+.nav-item {
+    margin-bottom: 1rem;
+}
+
+.nav-item span {
+    color: black;
+}
+
+.nav-item.active {
+    background: var(--gray-100);
+    border-radius: 0.5rem;
+}
+
+.nav-item.active span {
+    color: var(--gray-900);
+}
+
+.nav-item:hover {
+    background: var(--gray-100);
+    border-radius: 0.5rem;
+}
+
+.nav-link i {
+    color: var(--gray-600);
+}
+
+.sidebar-head {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--gray-900);
+    padding: 20px 0px 40px;
+}
+
+/* ============
+MAIN section
+============ */
+.title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.bg-principal {
+    background-color: var(--bg_2);
+}
+
+.top-bar {
+    padding: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.10), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    background-color: white;
+}
+
+/* ==========
+card
+============ */
+
+.card-title {
+    color: var(--gray-600);
+    font-weight: bold;
+}
+
+small.card-content {
+    color: var(--gray-300);
+}
+
+.card {
+    min-width: 200px;
+}
+
+@media screen and (max-width:600px) {
+    .nav-link>span {
+        display: none;
+    }
+
+    .nav-item {
+        width: 50px;
+    }
+
+    .sidebar-head {
+        visibility: hidden;
+    }
+}
+
+/* ===============
+navigation
+============= */
+
+.toggler-icon {
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.desactivate {
+    transform: translateX(-400px);
+    display: none;
+}
+
+.collapse-icon {
+    display: block;
+    height: 32px;
+    width: 50px;
+    font-size: 45px;
+}
+
+/* 
+===================
+form
+=================== */
+
+.form-hidden {
+    transform: translateY(-400px);
+    display: none;
+}
+
+/* 
+.displayForm {
+    transform: translateY(400px);
+    display: block;
+} */
+
+/* =================
+Login page
+================= */
+
+.login-page {
+    background: #f6f7f0;
+}
+
+.login-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-bg::before {
+    content: "";
+    position: absolute;
+    width: 640px;
+    height: 360px;
+    background: #a8bd7a;
+    top: -140px;
+    right: -160px;
+    border-radius: 220px;
+    filter: blur(6px);
+    opacity: 0.9;
+    transform: rotate(-8deg);
+}
+
+.login-bg::after {
+    content: "";
+    position: absolute;
+    width: 600px;
+    height: 380px;
+    background: #a8bd7a;
+    bottom: -180px;
+    left: -160px;
+    border-radius: 220px;
+    filter: blur(10px);
+    opacity: 0.9;
+    transform: rotate(10deg);
+}
+
+.login-frame {
+    background: #dfe8c6;
+    padding: 36px;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.login-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    width: min(820px, 92vw);
+}
+
+.register-card {
+    width: min(420px, 92vw);
+}
+
+.login-link {
+    color: #2d6cdf;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+.form-control:focus {
+    border-color: var(--vert);
+    box-shadow: 0 0 0 0.25rem rgba(168, 189, 122, 0.25);
+}
+
+.login-page .form-check-input:checked {
+    background-color: var(--vert);
+    border-color: var(--vert);
+}
+
+.login-visual {
+    border-radius: 10px;
+    background-image:
+        linear-gradient(180deg, #a9c8d0 0%, #dfe6ea 45%, #cdd3d7 100%),
+        linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    min-height: 220px;
+}
+
+.login-visual::before {
+    content: "";
+    position: absolute;
+    left: -10%;
+    bottom: -18%;
+    width: 120%;
+    height: 70%;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+    transform: rotate(-34deg);
+}
+
+.login-visual::after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 70%;
+    height: 80%;
+    /* background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 2px, transparent 2px, transparent 14px); */
+    opacity: 0.3;
+}
+
+@media (max-width: 720px) {
+    .login-card {
+        width: min(520px, 92vw);
+    }
+
+    .login-visual {
+        min-height: 160px;
+        display: none;
+    }
+}
+
+.card {
+    transition: all .3s ease-out;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* =================
+Availability grid
+================= */
+
+.availability-table th,
+.availability-table td {
+    vertical-align: middle;
+}
+
+.availability-cell {
+    background: var(--red);
+    padding: 0.5rem;
+}
+
+.availability-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+
+}
+
+.availability-checkbox {
+    width: 1.4rem;
+    height: 1.4rem;
+    transform: scale(1.15);
+    cursor: pointer;
+}

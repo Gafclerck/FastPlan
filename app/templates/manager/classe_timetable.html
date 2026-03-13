@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block title %} Emploi du temps {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <div>
+        <h2 class="title">Emploi du temps</h2>
+        <div class="text-muted">{{ classe.level }}-{{ classe.field }} {{ classe.tag }}</div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-primary shadow" id="form-toggler">Ajouter une seance</button>
+        <a href="{{ url_for('manager.classe', class_id=classe.id) }}" class="btn btn-outline-secondary shadow">
+            Retour
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+{% include "flash.html" %}
+
+<div class="mx-3 bg-white p-4 rounded-4 shadow form-hidden" id="togglable-form">
+    <form action="{{ url_for('manager.classe_timetable', class_id=classe.id) }}" class="form m-auto" method="post">
+        <div class="row g-3">
+            <div class="form-group col-12 col-md-6">
+                <label for="course_id" class="form-label">Cours</label>
+                <select id="course_id" name="course_id" class="form-control" required>
+                    <option value="">Choisir un cours</option>
+                    {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-12 col-md-6">
+                <label for="slot_id" class="form-label">Créneau</label>
+                <select id="slot_id" name="slot_id" class="form-control" required>
+                    <option value="">Choisir un créneau</option>
+                    {% for slot in slot_options %}
+                    <option value="{{ slot.id }}">{{ slot.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-12">
+                <label class="form-label">Classes concernées</label>
+                <div class="d-flex flex-wrap gap-3">
+                    {% for c in classes %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="class_ids" id="class_{{ c.id }}"
+                            value="{{ c.id }}" {% if c.id==classe.id %}checked{% endif %}>
+                        <label class="form-check-label" for="class_{{ c.id }}">{{ c.level }}-{{ c.field }} {{ c.tag
+                            }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group col-12 col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="mx-3 mt-4 bg-white p-3 rounded-4 shadow">
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center availability-table">
+            <thead class="table-light">
+                <tr>
+                    <th>Heure</th>
+                    {% for day in days %}
+                    <th>{{ day.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in time_rows %}
+                <tr>
+                    <th class="text-nowrap">{{ row.label }}</th>
+                    {% for day in days %}
+                    {% set ts = row.by_day.get(day.value) %}
+                    <td class="availability-cell">
+                        {% if ts %}
+                        {% set items = seances_by_slot.get(ts.id) %}
+                        <!-- <p>{{items}}</p> -->
+                        {% if items %}
+                        <div class="d-flex flex-column gap-1 text-start">
+                            {% for seance in items %}
+                            <div class="bg-light text-dark border py-2 text-center">
+                                <div class="fw-semibold">{{ seance.course_name }}</div>
+                                <div class="small text-muted">
+                                    <!-- {{ seance.date.strftime('%d/%m/%Y') if seance.date else '' }} -->
+                                    {{ seance.prof_name if seance.prof_name else '' }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

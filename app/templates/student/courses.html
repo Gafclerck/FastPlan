@@ -1,0 +1,35 @@
+{% extends "student/student_layout.html" %}
+
+{% block title %} Mes cours {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <h2 class="title">Mes cours</h2>
+</div>
+{% endblock %}
+
+{% block main %}
+{% include "flash.html" %}
+
+<div class="mx-3 mt-4">
+    {% if courses %}
+    <div class="row g-3">
+        {% for course in courses %}
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <h3 class="card-title">{{ course.name }}</h3>
+                    <small class="card-content d-block text-muted">Duree: {{ course.duration }}h</small>
+                    <small class="card-content d-block text-muted">Etat: {{ course.state }}</small>
+                    <a href="" class="btn btn-sm btn-primary mt-3">Voir les
+                        classes</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-light border">Vous n'avez pas encore de cours pour le momant</div>
+    {% endif %}
+</div>
+{% endblock %}

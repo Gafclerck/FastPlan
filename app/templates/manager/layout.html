@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}App{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="row m-0 p-0">
+        <div class="sidebar col-2 col-sm-4 col-md-3 col-lg-2 bg-white shadow-sm d-flex flex-column">
+            <a href=" #" class="d-block navbar-brand sidebar-head mx-auto p-2 mb-4 mt-3">FastPlan</a>
+            <div class="sidebar-menu">
+                <nav class="">
+                    <ul class="list-unstyled nav flex-column ">
+                        <li class="nav-item {{ 'active' if request.endpoint == 'manager.dashboard' else '' }}">
+                            <a href="{{ url_for('manager.dashboard') }}" class="nav-link">
+                                <i class="fa-solid fa-house li-icon"></i>
+                                <span class="li-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item {{ 'active' if request.endpoint and request.endpoint.startswith('profs.') else '' }}">
+                            <a href="{{ url_for('manager.professors') }}" class="nav-link">
+                                <i class="fa-solid fa-users"></i>
+                                <span class="li-text">Professeur</span>
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item {{ 'active' if request.endpoint and request.endpoint.startswith('classes.') else '' }}">
+                            <a href="{{ url_for('manager.classes') }}" class="nav-link">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <span class="li-text">Classes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{ 'active' if request.endpoint == 'manager.timetable' else '' }}">
+                            <a href="{{ url_for('manager.timetable') }}" class="nav-link">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span class="li-text">Emploi du temp</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{ 'active' if request.endpoint == 'manager.creneaux' else '' }}">
+                            <a href="{{ url_for('manager.creneaux') }}" class="nav-link">
+                                <i class="fa-solid fa-clock"></i>
+                                <span class="li-text">Crenaux</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link">
+                                <i class="fa-solid fa-building"></i>
+                                <span class="li-text">Salles de cours</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto pt-3 pb-2 border-top">
+                <div class="nav-item p-2">
+                    <a href="{{url_for('auth.logout')}}" class="nav-link">
+                        <i class="fa-solid fa-sign-out"></i>
+                        <span class="li-text">Se deconnecter</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <main class="main col m-0 p-0 bg-principal">
+            <div class="top-bar m-0 bg-white border-bottom p-2 d-flex justify-content-between align-items-center px-4">
+                <button id="toggler">
+                    <i class="fa-solid fa-equals"></i>
+                </button>
+                <div class="logo"><i class="fa-solid fa-user"></i>
+                    Admin</div>
+            </div>
+            <section class="main-top">
+                {% block main_top %}
+                {% block filter_reseach_block %}
+
+                {% endblock %}
+                {% endblock %}
+            </section>
+            <section class="content">
+                {% block main %}
+
+                {% endblock %}
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+</body>
+
+</html>

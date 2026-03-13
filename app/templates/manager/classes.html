@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %} Index {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <h2 class="title">Classses</h2>
+    <button type="button" class="btn btn-primary shadow" id="form-toggler">Ajouter une classe</button>
+</div>
+{% endblock %}
+{% block main %}
+<div class="mx-3 bg-white p-4 rounded-4 shadow form-hidden" id="togglable-form">
+    <form action="{{ url_for('manager.classes' )}}" class="form m-auto" method="post">
+        <div class="row mb-3">
+            <div class="form-group col-12 col-sm-6">
+                <label for="level" class="form-label">Niveau</label>
+                <select name="level" id="" class="form-control" required>
+                    <option value="">Niveau</option>
+                    <option value="L1">L1</option>
+                    <option value="L2">L2</option>
+                    <option value="L3">L3</option>
+                    <option value="M1">M1</option>
+                    <option value="M2">M2</option>
+                </select>
+            </div>
+            <div class="form-group col-12 col-sm-6">
+                <label for="field" class="form-label">Filière</label>
+                <select name="field" id="field" class="form-control" required>
+                    <option value="" selected disabled>Selectionner un fliere</option>
+                    <option value="GLRS">Genie Logicielle Reseaux Systemes (GLRS) </option>
+                    <option value="CS">CyberSecurité (CS)</option>
+                    <option value="IA">Intelligence Artificille (IA)</option>
+                    <option value="ETSE">Electronique Telecommunication Systemes Embarqués (ETSE)</option>
+                    <option value="CPD">Chef de Projet Digital (CPD)</option>
+                    <option value="CDSD">Concepteur De Solution Digital (CDSD)</option>
+                    <option value="TTL">Transport et Logistique (TTL)</option>
+                    <option value="MAIE">Mathematiques Appliqueés et Econometrie(MAIE)</option>
+                    <option value="MOSIEF">Mathematiques Appliqueés et Econometrie(MOSIEF)</option>
+                </select>
+            </div>
+            <div class="form-group col-12 col-sm-6">
+                <label for="academic_year" class="form-label">Anne Scolaire</label>
+                <select name="academic_year" id="academic_year" class="form-control" required>
+                    <option value="" selected disabled>Sélectionner une année</option>
+                    <option value="2022-2023">2022-2023</option>
+                    <option value="2023-2024">2023-2024</option>
+                    <option value="2024-2025">2024-2025</option>
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2026-2027">2026-2027</option>
+                    <option value="2027-2028">2027-2028</option>
+                    <option value="2028-2029">2028-2029</option>
+                </select>
+            </div>
+            <div class="form-group col-12 col-sm-6">
+                <label for="academic_year" class="form-label">Tag</label>
+                <select name="tag" id="tag" class="form-control">
+                    <option value="" selected disabled>choisi le tag</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="I">I</option>
+                    <option value="J">J</option>
+                    <option value="K">K</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3 g-3">
+            <button type="submit" class="btn btn-primary btn-md col-12 col-sm-2 me-sm-3">Enregistrer</button>
+            <button type="reset" class="btn btn-outline-secondary btn-md col-12 col-sm-2"
+                id="form-reset">Anuler</button>
+        </div>
+    </form>
+</div>
+<!-- /* message enad errors block  -->
+{% include "flash.html" %}
+
+<div class="mx-3 mt-4">
+    <div class="row g-3">
+        {% for classe in classes %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <a href="{{ url_for('manager.classe', class_id=classe.id) }}"
+                class="card shadow h-100 text-decoration-none text-reset">
+                <div class="card-body">
+                    <h3 class="card-title">{{ classe.level }}-{{ classe.field }}{% if classe.tag %} {{ classe.tag }}{%
+                        endif %} </h3>
+                    <small class="card-content d-block text-muted">{{ classe.academic_year }}</small>
+                    <span class="btn btn-sm btn-primary mt-3">details</span>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

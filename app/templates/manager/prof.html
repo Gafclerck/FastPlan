@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %} Index {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <h2 class="title">
+        {% if prof %}
+        {{ prof.name }} {{ prof.surname }}
+        {% else %}
+        Professor
+        {% endif %}
+    </h2>
+    <button type="button" class="btn btn-primary shadow" id="form-toggler">Ajouter un cours</button>
+</div>
+{% endblock %}
+{% block main %}
+<div class="mx-3 bg-white p-4 rounded-4 shadow form-hidden" id="togglable-form">
+    <form action="" class="form m-auto" method="post">
+        <div class="row mb-3">
+            <div class="form-group col-12 col-sm-6">
+                <label for="name" class="form-label">Intutilé</label>
+                <input class="form-control" type="text" name="name" id="nom" required>
+            </div>
+            <div class="form-group col-12 col-sm-6">
+                <label for="duration" class="form-label">Nombre d'heures</label>
+                <input name="duration" class="form-control" type="number" id="duration" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group col-12">
+                <label for="email" class="form-label">Classes Concernées</label>
+                {% for classe in classes %}
+                <input type="checkbox" id="" name="classe" value="{{ classe.id }}" class="form-check-input">
+                <label for="" class="form-check-label">{{ classe.level }}-{{ classe.field }}{% if tag %}-{{ classe.tag
+                    }} {% endif %} </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row mb-3 g-3">
+            <button type="submit" class="btn btn-primary btn-md col-12 col-sm-2 me-sm-3">Enregistrer</button>
+            <button type="reset" class="btn btn-outline-secondary btn-md col-12 col-sm-2"
+                id="form-reset">Anuler</button>
+        </div>
+    </form>
+</div>
+<!-- /* message enad errors block  -->
+{% include "flash.html" %}
+<!-- /* message enad errors block  -->
+<div class="mx-3 mt-4">
+    <div class="row g-3">
+        {% for course in prof_courses %}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">{{ course.name }} </h3>
+                    <small class="card-content d-block text-muted">{{ course.state }}</small>
+                    <small class="card-content d-block text-muted">{{ course.duration }} Hrs</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

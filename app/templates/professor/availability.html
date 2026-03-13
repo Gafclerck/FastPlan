@@ -1,0 +1,54 @@
+{% extends "prof_layout.html" %}
+
+{% block title %} Mes disponibilités {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <h2 class="title">Mes disponibilités</h2>
+</div>
+{% endblock %}
+
+{% block main %}
+{% include "flash.html" %}
+
+<form method="post" action="{{ url_for('professor.availability') }}">
+    <div class="mx-3 mt-4 bg-white p-3 rounded-4 shadow">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center availability-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Heure</th>
+                        {% for day in days %}
+                        <th>{{ day.label }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in time_rows %}
+                    <tr>
+                        <th class="text-nowrap">{{ row.label }}</th>
+                        {% for day in days %}
+                        {% set ts = row.by_day.get(day.value) %}
+                        <td class="availability-cell">
+                            {% if ts %}
+                            <label class="availability-label">
+                                <input class="form-check-input availability-checkbox" type="checkbox"
+                                    name="time_slot_id" value="{{ ts.id }}" {% if ts.id in checked_ids %}checked{% endif
+                                    %}>
+                            </label>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

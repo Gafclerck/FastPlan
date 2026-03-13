@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %} Index {% endblock %}
+
+{% block main_top %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-4">
+    <h2 class="title">Professeurs</h2>
+    <button type="button" class="btn btn-primary shadow" id="form-toggler">Ajouter un prof</button>
+</div>
+{% endblock %}
+{% block main %}
+<div class="mx-3 bg-white p-4 rounded-4 shadow form-hidden" id="togglable-form">
+    <form action="" class="form m-auto" method="post">
+        <div class="row mb-3">
+            <div class="form-group col-12 col-sm-6">
+                <label for="name" class="form-label">Nom</label>
+                <input class="form-control" type="text" name="name" id="nom" required>
+            </div>
+            <div class="form-group col-12 col-sm-6">
+                <label for="surname" class="form-label">Prenom</label>
+                <input name="surname" class="form-control" type="text" id="surname" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group col-12 col-sm-6">
+                <label for="email" class="form-label">email</label>
+                <input name="email" class="form-control" type="email" id="email" required>
+            </div>
+            <div class="form-group col-12 col-sm-6">
+                <label for="telephone" class="form-label">Telephone</label>
+                <input class="form-control" name="telephone" type="tel" id="telephone" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group col-12 col-sm-6">
+                <label for="speciality" class="form-label">Specialite</label>
+                <select name="speciality" id="speciality" class="form-control" required>
+                    <option value="" selected disabled>specialite</option>
+                    <option value="UI-UX">UI-UX</option>
+                    <option value="architecture logicielle">Architechture logicielle</option>
+                    <option value="mathematiques">Mathematiques</option>
+                    <option value="anglais">Anglais</option>
+                    <option value="Reseaux">Reseaux</option>
+                    <option value="Systemes">Systemes</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3 g-3">
+            <button type="submit" class="btn btn-primary btn-md col-12 col-sm-2 me-sm-3">Enregistrer</button>
+            <button type="reset" class="btn btn-outline-secondary btn-md col-12 col-sm-2"
+                id="form-reset">Anuler</button>
+        </div>
+    </form>
+</div>
+
+{% include "flash.html" %}
+
+<div class="mx-3 mt-4">
+    <div class="row g-3">
+        {% for prof in profs %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <a href="/profs/prof/{{ prof.id }}" class="card shadow h-100 text-decoration-none text-reset">
+                <div class="card-body">
+                    <h3 class="card-title">{{ prof.name | capitalize}} </h3>
+                    <small class="card-content d-block text-muted">{{ prof.email }}</small>
+                    <span class="btn btn-sm btn-primary mt-3">voir plus</span>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

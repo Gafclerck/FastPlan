@@ -1,0 +1,15 @@
+<div class="mx-3 mt-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for type, message in messages %}
+    {% if type == "error" %}
+    <div class="bg-danger p-3 rounded-2 shadow border-primary">{{ message }}</div>
+    {% elif type == "success" %}
+    <div class="bg-success p-3 rounded-2 shadow border-primary">{{ message }}</div>
+    {% else %}
+    <div class="bg-warning p-3 rounded-2 shadow border-primary">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
