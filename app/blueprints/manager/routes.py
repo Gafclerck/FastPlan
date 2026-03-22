@@ -1,16 +1,14 @@
-import os
 from flask import Blueprint, render_template, request, redirect, flash, url_for
 from sqlalchemy import select, func
+from app.blueprints.auth.auth import manager_required
 from app.controllers.class_controller import ClassCtrl
 from app.controllers.course_controller import CourseCtrl
 from app.controllers.seance_controller import SeanceCtrl
 from app.controllers.prof_controller import ProfCtrl
 from app.controllers.availability_controller import AvailabilityCtrl
 from app.database import Database
-from app.config import Config
 
-bp = Blueprint("manager", __name__, url_prefix="",
-                template_folder=os.path.join(Config.APP_DIR, "templates", "manager"))
+bp = Blueprint("manager", __name__, url_prefix="")
 
 _DAYS = [
     {"value": 0, "label": "Lun"},
@@ -23,6 +21,7 @@ _DAYS = [
 ]
 
 @bp.route("/dashboard", methods=["GET"])
+@manager_required
 def dashboard():
     engine = Database.get_engine()
     with engine.begin() as conn:
@@ -82,7 +81,7 @@ def dashboard():
 
     days_map = {d["value"]: d["label"] for d in _DAYS}
     return render_template(
-        "dashboard.html",
+        "manager/dashboard.html",
         totals=totals,
         seance_state_counts=seance_state_counts,
         recent_courses=recent_courses,
@@ -91,12 +90,13 @@ def dashboard():
     )
 
 @bp.route("/timetable", methods=["GET", "POST"])
+@manager_required
 def timetable():
     classes = ClassCtrl.get_all()
     if not classes:
         flash("Aucune classe disponible.", "error")
         return render_template(
-            "timetable.html",
+            "manager/timetable.html",
             classes=[],
             classe=None,
             selected_class_id=None,
@@ -137,7 +137,7 @@ def timetable():
         seances_by_slot.setdefault(row.slot_id, []).append(row)
 
     return render_template(
-        "timetable.html",
+        "manager/timetable.html",
         classes=classes,
         classe=classe,
         selected_class_id=selected_id,
@@ -147,12 +147,13 @@ def timetable():
     )
 
 @bp.route("/creneaux", methods=["GET", "POST"])
+@manager_required
 def creneaux():
     profs = ProfCtrl.get_all()
     if not profs:
         flash("Aucun professeur disponible.", "error")
         return render_template(
-            "prof_timetable.html",
+            "manager/prof_timetable.html",
             profs=[],
             prof=None,
             selected_prof_id=None,
@@ -193,7 +194,7 @@ def creneaux():
         seances_by_slot.setdefault(seance.slot_id, []).append(seance)
 
     return render_template(
-        "prof_timetable.html",
+        "manager/prof_timetable.html",
         profs=profs,
         prof=prof,
         selected_prof_id=selected_id,
@@ -204,7 +205,8 @@ def creneaux():
 
 
 @bp.route("/profs", methods=["POST", "GET"])
-@bp.route("profs/add", methods=["POST", "GET"])
+@bp.route("/profs/add", methods=["POST", "GET"])
+@manager_required
 def professors():
     if request.method == "POST":
         try:
@@ -222,9 +224,10 @@ def professors():
             return redirect(url_for(".professors"))
     elif request.method == "GET":
         profs = ProfCtrl.get_all()
-        return render_template("profs.html", profs=profs)
+        return render_template("manager/profs.html", profs=profs)
 
-@bp.route("profs/prof/<prof_id>", methods=["POST", "GET"])
+@bp.route("/profs/prof/<prof_id>", methods=["POST", "GET"])
+@manager_required
 def professor(prof_id=None):
     if request.method == "POST":
         try:
@@ -242,11 +245,12 @@ def professor(prof_id=None):
         prof = ProfCtrl.get_prof_by_id(int(prof_id))
         courses = CourseCtrl.get_course_by_prof_id(prof_id)
         classes = ClassCtrl.get_all()
-        return render_template("prof.html", prof = prof, prof_courses = courses, classes = classes)
+        return render_template("manager/prof.html", prof = prof, prof_courses = courses, classes = classes)
 
 
 @bp.route("/classes", methods=["POST", "GET"])
-@bp.route("classes/add", methods=["POST", "GET"])
+@bp.route("/classes/add", methods=["POST", "GET"])
+@manager_required
 def classes():
     if request.method == "POST":
         try:
@@ -262,9 +266,10 @@ def classes():
         return redirect(url_for(".classes"))
     elif request.method == "GET":
         classes = ClassCtrl.get_all()
-        return render_template("classes.html", classes = classes)
+        return render_template("manager/classes.html", classes = classes)
 
-@bp.route("classes/classe/<class_id>", methods=["POST", "GET"])
+@bp.route("/classes/classe/<class_id>", methods=["POST", "GET"])
+@manager_required
 def classe(class_id=None):
     if request.method == "POST":
         try:
@@ -280,11 +285,10 @@ def classe(class_id=None):
         classe = ClassCtrl.get_class_by_id(int(class_id))
         courses = CourseCtrl.get_course_by_class_id(class_id)
         all_courses = CourseCtrl.get_all()
-        print(courses)
-        print(courses)
-        return render_template("classe.html", classe=classe, class_courses = courses, all_courses = all_courses)
+        return render_template("manager/classe.html", classe=classe, class_courses = courses, all_courses = all_courses)
 
-@bp.route("classes/classe/<class_id>/timetable", methods=["GET", "POST"])
+@bp.route("/classes/classe/<class_id>/timetable", methods=["GET", "POST"])
+@manager_required
 def classe_timetable(class_id=None):
     try:
         class_id = int(class_id)
@@ -340,7 +344,7 @@ def classe_timetable(class_id=None):
     classes = ClassCtrl.get_all()
 
     return render_template(
-        "classe_timetable.html",
+        "manager/classe_timetable.html",
         classe=classe,
         days=_DAYS,
         time_rows=time_rows,

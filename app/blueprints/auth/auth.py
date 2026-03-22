@@ -4,10 +4,8 @@ from flask import Blueprint, render_template, request, redirect, flash, url_for,
 from app.controllers.auth_controller import AuthCtrl
 from app.controllers.student_controller import StudentCtrl
 from app.controllers.class_controller import ClassCtrl
-from app.config import Config
 
-bp = Blueprint("auth", __name__,
-                template_folder=os.path.join(Config.APP_DIR, "templates", "auth"))
+bp = Blueprint("auth", __name__)
 
 def auth_requied(func): 
     @wraps(func)
@@ -39,7 +37,7 @@ def login():
             flash(str(e), "error")
             return redirect(url_for(".login"))
     elif request.method == "GET":
-        return render_template("login.html")
+        return render_template("auth/login.html")
 
 
 @bp.route("/register", methods=["POST", "GET"])
@@ -60,7 +58,7 @@ def register():
             return redirect(url_for(".register"))
     elif request.method == "GET":   
         classes = ClassCtrl.get_all()
-        return render_template("register.html", classes = classes)
+        return render_template("auth/register.html", classes = classes)
 
 @bp.route("/logout")
 def logout():

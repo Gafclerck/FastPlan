@@ -6,9 +6,7 @@ from app.controllers.availability_controller import AvailabilityCtrl
 from app.controllers.seance_controller import SeanceCtrl
 from app.blueprints.auth.auth import auth_requied
 
-bp = Blueprint(
-    "student",
-    __name__, url_prefix="/student")
+bp = Blueprint("student",__name__, url_prefix="/student")
 
 _DAYS = [
     {"value": 0, "label": "Lun"},
@@ -69,4 +67,3 @@ def timetable():
         seances_by_slot = seances_by_slot,
         rows_map = rows_map
     )
-

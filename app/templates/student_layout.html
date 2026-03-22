@@ -15,37 +15,26 @@
 <body>
     <div class="row m-0 p-0">
         <div class="sidebar col-2 col-sm-4 col-md-3 col-lg-2 bg-white shadow-sm d-flex flex-column">
-            <a href=" #" class="d-block navbar-brand sidebar-head mx-auto p-2 mb-4 mt-3">AppName</a>
+            <a href="#" class="d-block navbar-brand sidebar-head mx-auto p-2 mb-4 mt-3">FastPlan</a>
             <div class="sidebar-menu">
                 <nav class="">
                     <ul class="list-unstyled nav flex-column">
-                        <li class="nav-item {{ 'active' if request.endpoint == 'professor.courses' else '' }}">
-                            <a href="{{ url_for('professor.courses') }}" class="nav-link">
+                        <li class="nav-item {{ 'active' if request.endpoint == 'professor.classes' else '' }}">
+                            <a href="{{ url_for('student.courses') }}" class="nav-link">
                                 <i class="fa-solid fa-book-open"></i>
                                 <span class="li-text">Cours</span>
                             </a>
                         </li>
-                        <li class="nav-item {{ 'active' if request.endpoint == 'professor.classes' else '' }}">
-                            <a href="{{ url_for('professor.classes') }}" class="nav-link">
-                                <i class="fa-solid fa-graduation-cap"></i>
-                                <span class="li-text">Classes</span>
-                            </a>
-                        </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('professor.time_table') }}" class="nav-link">
+                            <a href="{{ url_for('student.timetable') }}" class="nav-link">
                                 <i class="fa-solid fa-calendar"></i>
                                 <span class="li-text">Emploi du temp</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url_for('professor.availability') }}" class="nav-link">
-                                <i class="fa-solid fa-clock"></i>
-                                <span class="li-text">Disponibilités</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
             </div>
+
             <div class="mt-auto pt-3 pb-2 border-top">
                 <div class="nav-item p-2">
                     <a href="{{url_for('auth.logout')}}" class="nav-link">
@@ -61,7 +50,7 @@
                     <i class="fa-solid fa-equals"></i>
                 </button>
                 <div class="logo"><i class="fa-solid fa-user"></i>
-                    Pr {{ prof.name }}</div>
+                    {{ student.name }}</div>
             </div>
             <section class="main-top">
                 {% block main_top %}

@@ -6,10 +6,8 @@ from app.controllers.course_controller import CourseCtrl
 from app.controllers.class_controller import ClassCtrl
 from app.controllers.availability_controller import AvailabilityCtrl
 from app.controllers.seance_controller import SeanceCtrl
-from app.config import Config
 
-bp = Blueprint("professor", __name__, url_prefix="/professor",
-                template_folder=os.path.join(Config.APP_DIR, "templates", "professor"))
+bp = Blueprint("professor", __name__, url_prefix="/professor")
 
 _DAYS = [
     {"value": 0, "label": "Lun"},
@@ -40,7 +38,7 @@ def courses():
             flash("Veuillez vous connecter avec un compte professeur.", "error")
             return redirect(url_for("auth.login"))
         courses = CourseCtrl.get_course_by_prof_id(prof.id)
-        return render_template("courses.html", prof=prof, courses=courses)
+        return render_template("professor/courses.html", prof=prof, courses=courses)
 
 @bp.route("/classes", methods=["GET"])
 @auth_requied
@@ -93,7 +91,7 @@ def availability():
         )
 
     return render_template(
-        "availability.html",
+        "professor/availability.html",
         prof=prof,
         days=_DAYS,
         time_rows=time_rows,
@@ -124,7 +122,7 @@ def time_table():
         seances_by_slot[seance.slot_id] = seance
 
     return render_template(
-        "prof_time_table.html",
+        "professor/prof_time_table.html",
         prof = prof,
         days = _DAYS,
         seances_by_slot = seances_by_slot,

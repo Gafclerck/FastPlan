@@ -102,6 +102,7 @@ class Database:
             echo=True,
         )
         return cls.engine
+    
     @classmethod
     def get_engine(cls):
         if cls.engine is None:
