@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for
+from flask import Blueprint, render_template, request, redirect, flash, url_for, jsonify
 from sqlalchemy import select, func
 from app.blueprints.auth.auth import manager_required
 from app.controllers.class_controller import ClassCtrl
@@ -306,7 +306,8 @@ def classe_timetable(class_id=None):
             SeanceCtrl.create(
                 course_id=request.form.get("course_id"),
                 slot_id=request.form.get("slot_id"),
-                class_ids = request.form.getlist("class_ids")
+                class_ids=request.form.getlist("class_ids"),
+                class_context_id=class_id,
             )
             flash("seance ajouter avec succes !", "success")
         except ValueError as e:
@@ -314,9 +315,8 @@ def classe_timetable(class_id=None):
         return redirect(url_for(".classe_timetable", class_id=class_id))
 
     slots = AvailabilityCtrl.get_time_slots()
-    days_map = {d["value"]: d["label"] for d in _DAYS}
 
-    rows_map = {} # on a les heures avec les slot cle(08-10h) valeue(de tous le jours)
+    rows_map = {}
     for slot in slots:
         key = (slot.start_time, slot.end_time)
         if key not in rows_map:
@@ -328,13 +328,6 @@ def classe_timetable(class_id=None):
     for start_time, end_time in sorted(rows_map.keys()):
         label = f"{start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')}"
         time_rows.append({"label": label, "by_day": rows_map[(start_time, end_time)]})
-    # print(time_rows)
-    slot_options = []
-    for slot in slots: # exemple {"id":1 , "label": lun 08-10}
-        day_label = days_map.get(slot.day_of_week, str(slot.day_of_week))
-        label = f"{day_label} {slot.start_time.strftime('%H:%M')} - {slot.end_time.strftime('%H:%M')}"
-        slot_options.append({"id": slot.id, "label": label})
-    # print(slot_options)
     seances = SeanceCtrl.get_seance_by_class_id(class_id)
     seances_by_slot = {}
     for row in seances:
@@ -351,5 +344,22 @@ def classe_timetable(class_id=None):
         seances_by_slot=seances_by_slot,
         courses=courses,
         classes=classes,
-        slot_options=slot_options,
     )
+
+
+@bp.route(
+    "/api/classes/<int:class_id>/courses/<int:course_id>/available-slots",
+    methods=["GET"],
+)
+@manager_required
+def api_course_available_slots(class_id, course_id):
+    classe = ClassCtrl.get_class_by_id(class_id)
+    if not classe:
+        return jsonify({"error": "Classe introuvable."}), 404
+    if not CourseCtrl.is_course_assigned_to_class(course_id, class_id):
+        return jsonify({"error": "Cours invalide pour cette classe."}), 404
+    course_row = CourseCtrl.get_by_id(course_id)
+    if not course_row:
+        return jsonify({"error": "Cours introuvable."}), 404
+    slots = AvailabilityCtrl.get_slot_options_for_prof(course_row.prof_id)
+    return jsonify({"slots": slots})

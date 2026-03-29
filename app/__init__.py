@@ -32,4 +32,8 @@ def create_app():
     app.register_blueprint(prof_route.bp)
     app.register_blueprint(student_route.bp)
 
+    from app.cli import register_cli
+
+    register_cli(app)
+
     return app

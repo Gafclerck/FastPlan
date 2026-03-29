@@ -1,6 +1,5 @@
-import os
 from flask import Blueprint, render_template, request, redirect, flash, url_for, session
-from app.blueprints.auth.auth import auth_requied
+from app.blueprints.auth.auth import auth_required
 from app.controllers.prof_controller import ProfCtrl
 from app.controllers.course_controller import CourseCtrl
 from app.controllers.class_controller import ClassCtrl
@@ -28,7 +27,7 @@ def _get_current_prof():
 
 @bp.route("/", methods=["POST", "GET"])
 @bp.route("/courses", methods=["POST", "GET"])
-@auth_requied
+@auth_required
 def courses():
     if request.method == "POST":
         return redirect(url_for("professor.courses"))
@@ -41,7 +40,7 @@ def courses():
         return render_template("professor/courses.html", prof=prof, courses=courses)
 
 @bp.route("/classes", methods=["GET"])
-@auth_requied
+@auth_required
 def classes():
     prof = _get_current_prof()
     if not prof:
@@ -52,7 +51,7 @@ def classes():
 
 
 @bp.route("/availability", methods=["GET", "POST"])
-@auth_requied
+@auth_required
 def availability():
     prof = _get_current_prof()
     if not prof:
@@ -99,7 +98,7 @@ def availability():
     )
 
 @bp.route("/time_table")
-@auth_requied
+@auth_required
 def time_table():
     prof = _get_current_prof()
     if not prof:
@@ -109,14 +108,13 @@ def time_table():
     slots = AvailabilityCtrl.get_time_slots()
     rows_map = {} # on a les heures avec les slot cle(08-10h) valeue(de tous le jours)
     for slot in slots:
-        key = f"{slot.start_time.strftime("%H:%M")}-{slot.end_time.strftime("%H:%M")}"
+        key = f"{slot.start_time.strftime('%H:%M')}-{slot.end_time.strftime('%H:%M')}"
         if key not in rows_map:
             rows_map[key] = {}
         rows_map[key][slot.day_of_week] = slot
 
 
     seances = SeanceCtrl.get_seance_by_prof_id(prof.id)
-    print(seances)
     seances_by_slot = {}
     for seance in seances:
         seances_by_slot[seance.slot_id] = seance

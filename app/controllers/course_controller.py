@@ -8,6 +8,9 @@ class CourseCtrl:
         errors = CourseValidator.validate_course(name=name, duration=duration)
         if errors:
             raise ValueError(", ".join(errors))
+        classes = [c for c in (classes or []) if c]
+        if not classes:
+            raise ValueError("Sélectionnez au moins une classe.")
         course = Course(name, duration)
         error_message = CourseRepo.add(prof_id, course, classes)
         if error_message:
@@ -26,9 +29,9 @@ class CourseCtrl:
         return CourseRepo.getCourseByClassId(id)
 
     @staticmethod
-    def get_all():
-        return CourseRepo.getAll()
-
-    @staticmethod
     def get_by_id(id):
         return CourseRepo.getById(id)
+
+    @staticmethod
+    def is_course_assigned_to_class(course_id, class_id):
+        return CourseRepo.is_course_assigned_to_class(course_id, class_id)

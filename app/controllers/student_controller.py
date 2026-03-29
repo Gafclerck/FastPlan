@@ -17,7 +17,7 @@ class StudentCtrl:
         student = Student(name, surname, email, password)
         erreur = StudentRepo.add(student, class_id = class_id)
         if erreur:
-            raise ValueError("Echec de la cration du compte")
+            raise ValueError("Échec de la création du compte.")
 
     # @staticmethod
     # def get_all():

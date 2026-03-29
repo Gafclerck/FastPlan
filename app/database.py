@@ -1,3 +1,4 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData, ForeignKey, Table, Column, String, Integer, Text, Date, DateTime, Time, func
 from flask import current_app
@@ -97,9 +98,10 @@ class Database:
             return cls.engine
         if app is None:
             app = current_app
+        echo_sql = os.environ.get("SQLALCHEMY_ECHO", "").lower() in ("1", "true", "yes")
         cls.engine = create_engine(
             app.config.get("DATABASE_URL", "sqlite:///default.db"),
-            echo=True,
+            echo=echo_sql,
         )
         return cls.engine
     

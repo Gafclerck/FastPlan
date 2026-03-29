@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for, session
-from app.blueprints.auth.auth import auth_requied
+from flask import Blueprint, render_template, redirect, flash, url_for, session
+from app.blueprints.auth.auth import auth_required
 from app.controllers.course_controller import CourseCtrl
 from app.controllers.student_controller import StudentCtrl
 from app.controllers.availability_controller import AvailabilityCtrl
 from app.controllers.seance_controller import SeanceCtrl
-from app.blueprints.auth.auth import auth_requied
 
-bp = Blueprint("student",__name__, url_prefix="/student")
+bp = Blueprint("student", __name__, url_prefix="/student")
 
 _DAYS = [
     {"value": 0, "label": "Lun"},
@@ -27,35 +26,32 @@ def _get_current_student():
 
 @bp.route("/")
 @bp.route("/courses")
-@auth_requied
+@auth_required
 def courses():
-    if request.method == "GET":
-        student = _get_current_student()
-        if not student:
-            flash("Veuillez vous connecter avec un compte etudiant.", "error")
-            return redirect(url_for("auth.login"))
-        courses = CourseCtrl.get_course_by_class_id(student.class_id)
-        return render_template("student/courses.html", student=student, courses=courses)
+    student = _get_current_student()
+    if not student:
+        flash("Veuillez vous connecter avec un compte étudiant.", "error")
+        return redirect(url_for("auth.login"))
+    courses = CourseCtrl.get_course_by_class_id(student.class_id)
+    return render_template("student/courses.html", student=student, courses=courses)
 
 @bp.route("/time_table")
-@auth_requied
+@auth_required
 def timetable():
     student = _get_current_student()
     if not student:
-        flash("Veuillez vous connecter avec un compte professeur.", "error")
+        flash("Veuillez vous connecter avec un compte étudiant.", "error")
         return redirect(url_for("auth.login"))
 
     slots = AvailabilityCtrl.get_time_slots()
-    rows_map = {} # on a les heures avec les slot cle(08-10h) valeue(de tous le jours)
+    rows_map = {}
     for slot in slots:
-        key = f"{slot.start_time.strftime("%H:%M")}-{slot.end_time.strftime("%H:%M")}"
+        key = f"{slot.start_time.strftime('%H:%M')}-{slot.end_time.strftime('%H:%M')}"
         if key not in rows_map:
             rows_map[key] = {}
         rows_map[key][slot.day_of_week] = slot
 
-
     seances = SeanceCtrl.get_seance_by_class_id(student.class_id)
-    print(seances)
     seances_by_slot = {}
     for seance in seances:
         seances_by_slot[seance.slot_id] = seance

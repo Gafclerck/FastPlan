@@ -4,6 +4,7 @@ from app.repositories.user_repo import UserRepo
 from app.validators.user_validator import UserValidator
 
 class AuthCtrl:
+    @staticmethod
     def login(email, password):
         mail_error = UserValidator.validate_email(email)
         if mail_error:
@@ -20,5 +21,6 @@ class AuthCtrl:
         
         return user
 
+    @staticmethod
     def register():
         pass

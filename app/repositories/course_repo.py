@@ -9,29 +9,25 @@ class CourseRepo:
         class_course_table = Database.class_course_table
         query = insert(course_table)
         engine = Database.get_engine()
-        with engine.begin() as conn:
-            try:
+        try:
+            with engine.begin() as conn:
                 course_id = conn.execute(
-                    query,{
+                    query,
+                    {
                         "prof_id": prof_id,
-                        "name" : course.name,
-                        "duration" : int(course.duration),
-                        "state" : course.state,
-                    }
+                        "name": course.name,
+                        "duration": int(course.duration),
+                        "state": course.state,
+                    },
                 ).lastrowid
                 for classe_id in classes:
                     conn.execute(
                         insert(class_course_table),
-                        {
-                            "course_id":course_id,
-                            "class_id": classe_id
-                        }
+                        {"course_id": course_id, "class_id": classe_id},
                     )
-                return None
-            except (SQLAlchemyError, DBAPIError)  as e:
-                print(str(e))
-                conn.rollback()
-                return "Echec de L'ajout du cours resessayer"
+            return None
+        except (SQLAlchemyError, DBAPIError):
+            return "Échec de l'ajout du cours. Veuillez réessayer."
                 
     @staticmethod
     def getAll():
@@ -75,3 +71,14 @@ class CourseRepo:
         engine = Database.get_engine()
         with engine.connect() as conn:
             return conn.execute(query).fetchone()
+
+    @staticmethod
+    def is_course_assigned_to_class(course_id, class_id):
+        class_course_table = Database.class_course_table
+        engine = Database.get_engine()
+        query = select(class_course_table.c.id).where(
+            class_course_table.c.course_id == course_id,
+            class_course_table.c.class_id == class_id,
+        ).limit(1)
+        with engine.connect() as conn:
+            return conn.execute(query).first() is not None

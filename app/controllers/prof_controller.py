@@ -17,7 +17,7 @@ class ProfCtrl:
         prof = Professor(name, surname, email, telephone, speciality, password)
         erreur = ProfRepo.add(prof)
         if erreur:
-            raise ValueError("Echec de la cration du compte")
+            raise ValueError("Échec de la création du compte.")
 
     @staticmethod
     def get_all():

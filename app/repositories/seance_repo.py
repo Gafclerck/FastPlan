@@ -1,4 +1,4 @@
-from sqlalchemy import delete, insert, select
+from sqlalchemy import insert, select
 from app.database import Database
 from sqlalchemy.exc import SQLAlchemyError, DBAPIError
 
@@ -9,27 +9,22 @@ class SeanceRepo:
         class_seance = Database.class_seance_table
         engine = Database.get_engine()
         unique_ids = list({int(x) for x in class_ids})
-        with engine.begin() as conn:
-            try :
+        try:
+            with engine.begin() as conn:
                 seance_id = conn.execute(
                     insert(seance_table),
-                    {
-                        "slot_id":slot_id,
-                        "course_id":course_id
-                    }
+                    {"slot_id": slot_id, "course_id": course_id},
                 ).lastrowid
-                if not seance_id: raise SQLAlchemyError
+                if not seance_id:
+                    raise ValueError("no seance id")
                 rows = [
-                    {
-                        "seance_id": seance_id,
-                        "class_id": class_id,
-                    }
+                    {"seance_id": seance_id, "class_id": class_id}
                     for class_id in unique_ids
                 ]
                 conn.execute(insert(class_seance), rows)
-            except (SQLAlchemyError, DBAPIError):
-                conn.rollback()
-                return "Echec de l'ajout veillez reessayer"
+            return None
+        except (SQLAlchemyError, DBAPIError, ValueError, TypeError):
+            return "Échec de l'ajout. Veuillez réessayer."
 
     @staticmethod
     def getSeanceByClass(class_id):

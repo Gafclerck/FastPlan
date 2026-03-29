@@ -34,12 +34,12 @@
             </div>
             <div class="form-group col-12 col-md-6">
                 <label for="slot_id" class="form-label">Créneau</label>
-                <select id="slot_id" name="slot_id" class="form-control" required>
-                    <option value="">Choisir un créneau</option>
-                    {% for slot in slot_options %}
-                    <option value="{{ slot.id }}">{{ slot.label }}</option>
-                    {% endfor %}
+                <select id="slot_id" name="slot_id" class="form-control" disabled
+                    aria-describedby="slot-help">
+                    <option value="">Choisissez d'abord un cours</option>
                 </select>
+                <div id="slot-help" class="form-text small text-muted">Les créneaux listés correspondent aux
+                    disponibilités du professeur du cours sélectionné.</div>
             </div>
             <div class="form-group col-12">
                 <label class="form-label">Classes concernées</label>
@@ -108,4 +108,91 @@
         </table>
     </div>
 </div>
+<script>
+(function () {
+    const slotsApiTemplate = {{ url_for('manager.api_course_available_slots', class_id=classe.id, course_id=0)|tojson }};
+    const courseSelect = document.getElementById('course_id');
+    const slotSelect = document.getElementById('slot_id');
+    const slotHelp = document.getElementById('slot-help');
+
+    function slotsUrl(courseId) {
+        return slotsApiTemplate.replace('/courses/0/', '/courses/' + courseId + '/');
+    }
+
+    function resetSlots(errorMessage) {
+        slotSelect.innerHTML = '';
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = errorMessage ? '—' : 'Choisissez d\'abord un cours';
+        slotSelect.appendChild(opt);
+        slotSelect.disabled = true;
+        slotSelect.removeAttribute('required');
+        slotHelp.textContent = errorMessage
+            || 'Les créneaux listés correspondent aux disponibilités du professeur du cours sélectionné.';
+    }
+
+    function loadSlots(courseId) {
+        if (!courseId) {
+            resetSlots();
+            return;
+        }
+        slotSelect.disabled = true;
+        slotSelect.innerHTML = '';
+        const loading = document.createElement('option');
+        loading.value = '';
+        loading.textContent = 'Chargement…';
+        slotSelect.appendChild(loading);
+        slotHelp.textContent = 'Chargement des créneaux…';
+
+        fetch(slotsUrl(courseId), { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+            .then(function (res) {
+                return res.json().then(function (data) {
+                    return { ok: res.ok, data: data };
+                });
+            })
+            .then(function (_ref) {
+                const ok = _ref.ok;
+                const data = _ref.data;
+                slotSelect.innerHTML = '';
+                if (!ok) {
+                    resetSlots(data.error || 'Erreur lors du chargement.');
+                    return;
+                }
+                const slots = data.slots || [];
+                if (slots.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = 'Aucun créneau disponible';
+                    slotSelect.appendChild(opt);
+                    slotSelect.disabled = true;
+                    slotSelect.removeAttribute('required');
+                    slotHelp.textContent =
+                        'Ce professeur n\'a pas encore renseigné de disponibilités pour ces horaires.';
+                    return;
+                }
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = 'Choisir un créneau';
+                slotSelect.appendChild(placeholder);
+                slots.forEach(function (s) {
+                    const o = document.createElement('option');
+                    o.value = s.id;
+                    o.textContent = s.label;
+                    slotSelect.appendChild(o);
+                });
+                slotSelect.disabled = false;
+                slotSelect.setAttribute('required', 'required');
+                slotHelp.textContent =
+                    'Créneaux parmi les disponibilités déclarées par le professeur de ce cours.';
+            })
+            .catch(function () {
+                resetSlots('Impossible de charger les créneaux.');
+            });
+    }
+
+    courseSelect.addEventListener('change', function () {
+        loadSlots(courseSelect.value);
+    });
+})();
+</script>
 {% endblock %}

@@ -48,7 +48,7 @@ class UserValidator:
     def validate_role(role):
         if not role or not isinstance(role, str):
             return "Role is required and must be a string."
-        valid_roles = ["student", "professor", "admin"]
+        valid_roles = ["student", "professor", "gestionnaire"]
         if role not in valid_roles:
             return f"Role must be one of: {', '.join(valid_roles)}."
         return None
